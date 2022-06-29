@@ -1,3 +1,4 @@
+import 'package:flappy_bird/Pages/bird.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,9 +15,10 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         children: [
           Expanded(
+            flex: 2,
               child: Container(
-                
                 color: Colors.blue,
+                child: Center(child: Mybird()),
               )
           ),
           Expanded(
