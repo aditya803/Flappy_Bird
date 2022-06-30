@@ -14,11 +14,17 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   
   double birdYaxis = 0;
+  double time =0;
+  double height =0;
+  double initialHeight=0;
 
   void jump(){
-    Timer.periodic(Duration(milliseconds: 500), (timer){
+    initialHeight = birdYaxis;
+    Timer.periodic(Duration(milliseconds: 100), (timer){
+      time += 0.1;
+      height = -4.9 * time * time + 2.9 * time;
       setState(() {
-        birdYaxis -= 0.1;
+        birdYaxis = initialHeight - height;
       });
     });
   }
