@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
-// import 'dart:ffi';
-// import 'dart:html';
+
 
 import 'package:flappy_bird/Pages/bird.dart';
 import 'package:flutter/material.dart';
@@ -51,21 +50,35 @@ class _HomePageState extends State<HomePage> {
         children: [
           Expanded(
             flex: 2,
-              child: GestureDetector(
-                onTap: (){
-                  if(gameState){
-                    jump();
-                  }
-                  else{
-                    startGame();
-                  }
-                },
-                child: AnimatedContainer(
-                  alignment: Alignment(0,birdYaxis),
-                  color: Colors.blue,
-                  duration: Duration(milliseconds: 0),
-                  child: Mybird(),
-                ),
+              child: Stack(
+                children: [
+                  GestureDetector(
+                    onTap: (){
+                      if(gameState){
+                        jump();
+                      }
+                      else{
+                        startGame();
+                      }
+                    },
+                    child: AnimatedContainer(
+                      alignment: Alignment(0,birdYaxis),
+                      color: Colors.blue,
+                      duration: Duration(milliseconds: 0),
+                      child: Mybird(),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment(0,-0.2),
+                    child: gameState
+                        ? Text(" ")
+                        : Text("T A P  T O  P L A Y",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20)
+                    )
+                  )
+                ],
               )
           ),
           Container(
