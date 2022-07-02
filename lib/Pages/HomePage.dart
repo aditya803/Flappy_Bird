@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage> {
   double height =0;
   double initialHeight= birdYaxis;
   bool gameState = false;
+  double pos1 = 0;
+  double pos2 = 1;
 
   void jump(){
     setState(() {
@@ -36,6 +38,8 @@ class _HomePageState extends State<HomePage> {
       height = -4.9 * time * time + 2.8 * time;
       setState(() {
         birdYaxis = initialHeight - height;
+        pos1 -= 0.05;
+        pos2 -= 0.05;
       });
 
       if(birdYaxis>1){
@@ -82,28 +86,28 @@ class _HomePageState extends State<HomePage> {
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 0),
-                    alignment: Alignment(0,1.1),
+                    alignment: Alignment(pos1,1.1),
                     child: MyObject(
                       size: 200.0,
                     ),
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 0),
-                    alignment: Alignment(1,-1.1),
+                    alignment: Alignment(pos1,-1.1),
                     child: MyObject(
                       size: 200.0,
                     ),
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 0),
-                    alignment: Alignment(0.8,1.1),
+                    alignment: Alignment(pos2,1.1),
                     child: MyObject(
                       size: 120.0,
                     )
                   ),
                   AnimatedContainer(
                     duration: Duration(milliseconds: 0),
-                    alignment: Alignment(0,-1.1),
+                    alignment: Alignment(pos2,-1.1),
                     child: MyObject(
                       size: 150.0,
                     ),
