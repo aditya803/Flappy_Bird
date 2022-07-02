@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 import 'dart:ui';
 
 
@@ -53,24 +54,50 @@ class _HomePageState extends State<HomePage> {
           {pos2 -= 0.05;}
       });
 
-      if(birdYaxis>1){
+      if(birdYaxis>1 || birdYaxis < -1){
         timer.cancel();
         gameState = false;
       }
 
     });
   }
+
+  void resetGame(){
+    Navigator.pop(context);
+    setState(() {
+      birdYaxis=0;
+      gameState=false;
+      time=0;
+      initialHeight=birdYaxis;
+    });
+  }
+
+  void _showDialog(){
+    showDialog(
+      context: context,
+      builder: (BuildContext context){
+        return AlertDialog(
+          backgroundColor: Colors.brown,
+          title: Center(child: Text('GAME OVER')),
+          actions: [
+            GestureDetector(
+              onTap: resetGame,
+              child: ClipRRect(
+                borderRadius:  BorderRadius.circular(5),
+                child: Container(
+                  padding: EdgeInsets.all(7),
+                  child: Text('Play Again'),
+                )
+              )
+            ),
+          ],
+        );
+      });
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        if(gameState){
-          jump();
-        }
-        else{
-          startGame();
-        }
-      },
+      onTap: gameState ? jump : startGame,
       child: Scaffold(
         body: Column(
           children: [
