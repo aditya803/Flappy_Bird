@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'package:flappy_bird/Pages/bird.dart';
 import 'package:flutter/material.dart';
 
+import 'objects.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -77,7 +79,35 @@ class _HomePageState extends State<HomePage> {
                             color: Colors.white,
                             fontSize: 20)
                     )
-                  )
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 0),
+                    alignment: Alignment(0,1.1),
+                    child: MyObject(
+                      size: 200.0,
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 0),
+                    alignment: Alignment(1,-1.1),
+                    child: MyObject(
+                      size: 200.0,
+                    ),
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 0),
+                    alignment: Alignment(0.8,1.1),
+                    child: MyObject(
+                      size: 120.0,
+                    )
+                  ),
+                  AnimatedContainer(
+                    duration: Duration(milliseconds: 0),
+                    alignment: Alignment(0,-1.1),
+                    child: MyObject(
+                      size: 150.0,
+                    ),
+                  ),
                 ],
               )
           ),

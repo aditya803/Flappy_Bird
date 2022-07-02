@@ -12,7 +12,10 @@ class MyObject extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         color: Colors.green,
-
+        border: Border.all(
+          color: (Colors.green[800])!,
+          width: 10
+        )
       ),
 
     );
