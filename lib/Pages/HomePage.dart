@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:html';
 import 'dart:ui';
-
-
 import 'package:flappy_bird/Pages/bird.dart';
 import 'package:flutter/material.dart';
-
 import 'objects.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,6 +20,15 @@ class _HomePageState extends State<HomePage> {
   bool gameState = false;
   static double pos1 = 0;
   double pos2 = pos1 + 1.5;
+  double birdWidth = 0.1;
+  double birdHeight = 0.1;
+
+  static List<double> objectPosx = [2,2+1.5];
+  static double objectWidth = 0.5;
+  List<List<double>> objectHeight = [
+    [0.6,0.4],
+    [0.4,0.6]
+  ];
 
   void jump(){
     setState(() {
@@ -54,12 +59,28 @@ class _HomePageState extends State<HomePage> {
           {pos2 -= 0.05;}
       });
 
-      if(birdYaxis>1 || birdYaxis < -1){
+      if(birdisDead()){
         timer.cancel();
-        gameState = false;
+        gameState=false;
       }
 
     });
+  }
+
+  bool birdisDead(){
+    if(birdYaxis>1 || birdYaxis < -1){
+      return true;
+    }
+
+    for(int i=0; i< objectPosx.length; i++){
+      if(objectPosx[i] <= birdWidth && objectPosx[i] + objectWidth >= -birdWidth
+         && (birdYaxis <= -1 + objectHeight[i][0] ||
+           birdYaxis + birdHeight >= 1 - objectHeight[i][1]))
+        return true;
+    }
+
+    return false;
+
   }
 
   void resetGame(){
@@ -109,7 +130,11 @@ class _HomePageState extends State<HomePage> {
                       alignment: Alignment(0,birdYaxis),
                       color: Colors.blue,
                       duration: Duration(milliseconds: 0),
-                      child: Mybird(),
+                      child: Mybird(
+                        birdY: birdYaxis,
+                        bWidth: birdWidth,
+                        bHeight: birdHeight,
+                      ),
                     ),
                     Container(
                       alignment: Alignment(0,-0.2),
@@ -121,33 +146,29 @@ class _HomePageState extends State<HomePage> {
                               fontSize: 20)
                       )
                     ),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 0),
-                      alignment: Alignment(pos1,1.1),
-                      child: MyObject(
-                        size: 200.0,
-                      ),
+                    MyObject(
+                        objectPosX: objectPosx[0],
+                        objectWidth: objectWidth,
+                        objectHeight: objectHeight[0][0],
+                        isThisBottomBarrier: false
                     ),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 0),
-                      alignment: Alignment(pos1,-1.1),
-                      child: MyObject(
-                        size: 200.0,
-                      ),
+                    MyObject(
+                        objectPosX: objectPosx[0],
+                        objectWidth: objectWidth,
+                        objectHeight: objectHeight[0][1],
+                        isThisBottomBarrier: true
                     ),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 0),
-                      alignment: Alignment(pos2,1.1),
-                      child: MyObject(
-                        size: 120.0,
-                      )
+                    MyObject(
+                        objectPosX: objectPosx[1],
+                        objectWidth: objectWidth,
+                        objectHeight: objectHeight[1][0],
+                        isThisBottomBarrier: false
                     ),
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 0),
-                      alignment: Alignment(pos2,-1.1),
-                      child: MyObject(
-                        size: 150.0,
-                      ),
+                    MyObject(
+                        objectPosX: objectPosx[1],
+                        objectWidth: objectWidth,
+                        objectHeight: objectHeight[1][1],
+                        isThisBottomBarrier: true
                     ),
                   ],
                 )
