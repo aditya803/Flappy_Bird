@@ -1,27 +1,26 @@
-//import 'dart:html';
-
 import 'package:flutter/material.dart';
 
-class Mybird extends StatelessWidget {
+class MyBird extends StatelessWidget {
   final birdY;
-  final double bWidth;
-  final double bHeight;
+  final double birdHeight;
+  final double birdWidth;
 
-  Mybird({
+  MyBird({
     this.birdY,
-    required this.bHeight,
-    required this.bWidth
+    required this.birdHeight,
+    required this.birdWidth,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment(0, (2*birdY+bHeight)/(2-bHeight)),
+      alignment: Alignment(0,(2 * birdY +birdHeight) / (2-birdHeight)),
       child: Image.asset(
           'assets/bird1.png',
-          fit: BoxFit.fill,
-        width: MediaQuery.of(context).size.width * bWidth/2,
-        height: MediaQuery.of(context).size.height * bHeight/2,
-      ));
+        width: MediaQuery.of(context).size.height * birdWidth / 2,
+        height: MediaQuery.of(context).size.height * birdHeight / 2,
+        fit: BoxFit.fill,
+      ),
+    );
   }
 }

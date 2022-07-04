@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:ui';
-import 'package:flappy_bird/Pages/bird.dart';
 import 'package:flutter/material.dart';
+import 'bird.dart';
 import 'objects.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,197 +12,202 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
-  static double birdYaxis = 0;
-  double time =0;
-  double height =0;
-  double initialHeight= birdYaxis;
-  bool gameState = false;
-  static double pos1 = 0;
-  double pos2 = pos1 + 1.5;
-  double birdWidth = 0.1;
+  static double birdY = 0;
+  double height = 0;
+  double initialPos = birdY;
+  double time = 0;
   double birdHeight = 0.1;
+  double birdWidth = 0.1;
 
-  static List<double> objectPosx = [2,2+1.5];
-  static double objectWidth = 0.5;
-  List<List<double>> objectHeight = [
+  bool gameHasStarted = false;
+
+  static List<double> barrierX=  [2 , 2 + 1.5];
+  static double barrierWidth = 0.5;
+  List<List<double>> barrierHeight = [
     [0.6,0.4],
     [0.4,0.6]
   ];
-
   void jump(){
     setState(() {
-      initialHeight = birdYaxis;
-      time = 0;
+      time =0;
+      initialPos = birdY;
     });
   }
-
   void startGame(){
-    gameState = true;
-    Timer.periodic(Duration(milliseconds: 60), (timer){
-      time += 0.05;
+    gameHasStarted=true;
+    Timer.periodic(Duration(milliseconds: 50), (timer){
+      time+=0.01;
+
       height = -4.9 * time * time + 2.8 * time;
       setState(() {
-        birdYaxis = initialHeight - height;
-      });
-
-      setState(() {
-        if(pos1 < -2)
-          {pos1 +=3.5;}
-        else
-          {pos1 -= 0.05;}
-      });
-      setState(() {
-        if(pos2 < -2)
-          {pos2 +=3.5;}
-        else
-          {pos2 -= 0.05;}
+        birdY = initialPos - height;
       });
 
       if(birdisDead()){
         timer.cancel();
-        gameState=false;
+        gameHasStarted=false;
+        _showDialog();
       }
 
+      moveMap();
     });
   }
+  void moveMap(){
+    for(int i=0;i< barrierX.length;i++){
+      setState(() {
+        barrierX[i] -= 0.05;
+      });
 
+      if(barrierX[i] <-1.5){
+         barrierX[i] += 3;
+      }
+    }
+  }
   bool birdisDead(){
-    if(birdYaxis>1 || birdYaxis < -1){
+    if(birdY < -1 || birdY > 1){
       return true;
     }
 
-    for(int i=0; i< objectPosx.length; i++){
-      if(objectPosx[i] <= birdWidth && objectPosx[i] + objectWidth >= -birdWidth
-         && (birdYaxis <= -1 + objectHeight[i][0] ||
-           birdYaxis + birdHeight >= 1 - objectHeight[i][1]))
+    for(int i=0;i< barrierX.length;i++){
+      if(barrierX[i] <= birdWidth &&
+         barrierX[i] + barrierWidth >= -birdWidth &&
+         (birdY <= -1 + barrierHeight[i][0] ||
+           birdY + birdHeight >= 1 - barrierHeight[i][1])){
         return true;
+      }
     }
-
     return false;
-
   }
-
-  void resetGame(){
-    Navigator.pop(context);
-    setState(() {
-      birdYaxis=0;
-      gameState=false;
-      time=0;
-      initialHeight=birdYaxis;
-    });
-  }
-
   void _showDialog(){
     showDialog(
       context: context,
       builder: (BuildContext context){
         return AlertDialog(
           backgroundColor: Colors.brown,
-          title: Center(child: Text('GAME OVER')),
+          title: Center(
+            child: Text(
+                'G A M E O V E R',
+              style: TextStyle(
+                color: Colors.white
+              ),
+            ),
+          ),
           actions: [
             GestureDetector(
               onTap: resetGame,
               child: ClipRRect(
-                borderRadius:  BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(5),
                 child: Container(
                   padding: EdgeInsets.all(7),
-                  child: Text('Play Again'),
-                )
-              )
-            ),
+                  color: Colors.white,
+                  child: Text(
+                      'PLAY AGAIN',
+                    style: TextStyle(
+                      color: Colors.brown
+                    ),
+                  ),
+                ),
+              ),
+            )
           ],
         );
-      });
+      }
+
+    );
+  }
+  void resetGame(){
+    Navigator.pop(context);
+    setState(() {
+      birdY=0;
+      gameHasStarted=false;
+      time=0;
+      initialPos=birdY;
+    });
   }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: gameState ? jump : startGame,
+      onTap: gameHasStarted ? jump : startGame,
       child: Scaffold(
         body: Column(
           children: [
             Expanded(
-              flex: 2,
+              flex: 3,
+              child: Container(
+                color: Colors.blue,
                 child: Stack(
                   children: [
-                    AnimatedContainer(
-                      alignment: Alignment(0,birdYaxis),
-                      color: Colors.blue,
-                      duration: Duration(milliseconds: 0),
-                      child: Mybird(
-                        birdY: birdYaxis,
-                        bWidth: birdWidth,
-                        bHeight: birdHeight,
-                      ),
+                    MyBird(
+                      birdY: birdY,
+                      birdHeight: birdHeight,
+                      birdWidth: birdWidth,
                     ),
                     Container(
-                      alignment: Alignment(0,-0.2),
-                      child: gameState
-                          ? Text(" ")
-                          : Text("T A P  T O  P L A Y",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20)
-                      )
+                      alignment: Alignment(0,-0.3),
+                      child: Text(
+                        gameHasStarted ? ' '
+                        : 'T A P  T O  P L A Y',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                        ),
+                      ),
                     ),
-                    MyObject(
-                        objectPosX: objectPosx[0],
-                        objectWidth: objectWidth,
-                        objectHeight: objectHeight[0][0],
-                        isThisBottomBarrier: false
+                    MyBarrier(
+                      barrierX: barrierX[0],
+                      barrierHeight: barrierHeight[0][1],
+                      barrierWidth: barrierWidth,
+                      isthisBottomBarrier: false
                     ),
-                    MyObject(
-                        objectPosX: objectPosx[0],
-                        objectWidth: objectWidth,
-                        objectHeight: objectHeight[0][1],
-                        isThisBottomBarrier: true
+                    MyBarrier(
+                        barrierX: barrierX[0],
+                        barrierHeight: barrierHeight[0][1],
+                        barrierWidth: barrierWidth,
+                        isthisBottomBarrier: true
                     ),
-                    MyObject(
-                        objectPosX: objectPosx[1],
-                        objectWidth: objectWidth,
-                        objectHeight: objectHeight[1][0],
-                        isThisBottomBarrier: false
+                    MyBarrier(
+                        barrierX: barrierX[1],
+                        barrierHeight: barrierHeight[1][0],
+                        barrierWidth: barrierWidth,
+                        isthisBottomBarrier: false
                     ),
-                    MyObject(
-                        objectPosX: objectPosx[1],
-                        objectWidth: objectWidth,
-                        objectHeight: objectHeight[1][1],
-                        isThisBottomBarrier: true
+                    MyBarrier(
+                        barrierX: barrierX[1],
+                        barrierHeight: barrierHeight[1][1],
+                        barrierWidth: barrierWidth,
+                        isthisBottomBarrier: true
                     ),
                   ],
-                )
+                ),
+              ),
             ),
-            Container(
-              height: 15,
-              color: Colors.green,
-            ),
+            Container(color: Colors.green,height: 15),
             Expanded(
-                child: Container(
-                  color: Colors.brown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children:[
-                          Text("SCORE",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20 ),),
-                          SizedBox(height: 10),
-                          Text("0",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 20 ))
-                        ]
-                      ),
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                        children:[
-                          Text("HIGHSCORE",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,  fontSize: 20 )),
-                          SizedBox(height: 10),
-                          Text("0",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,  fontSize: 20 ))
-                        ]
-                      )
-                    ],
-                  ),
-                )
-            ),
+              child: Container(
+                color: Colors.brown,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('SCORE',style: TextStyle(color: Colors.white,fontSize: 15),),
+                        SizedBox(height: 20),
+                        Text('0',style: TextStyle(color: Colors.white,fontSize: 15),)
+                      ],
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('HIGH SCORE',style: TextStyle(color: Colors.white,fontSize: 15),),
+                        SizedBox(height: 20),
+                        Text('0',style: TextStyle(color: Colors.white,fontSize: 15),)
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
