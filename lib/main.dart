@@ -1,5 +1,5 @@
+import 'package:flappy_bird/Pages/home_page.dart';
 import 'package:flutter/material.dart';
-import 'Pages/HomePage.dart';
 
 void main() {
   runApp(MyApp());

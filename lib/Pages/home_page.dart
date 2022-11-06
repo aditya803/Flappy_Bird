@@ -1,6 +1,7 @@
 import 'dart:async';
+import 'package:flappy_bird/model/barrier_model.dart';
 import 'package:flutter/material.dart';
-import 'bird.dart';
+import '../model/bird_model.dart';
 import 'objects.dart';
 
 
