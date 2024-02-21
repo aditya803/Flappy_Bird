@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flappy_bird/model/barrier_model.dart';
 import 'package:flutter/material.dart';
 import '../model/bird_model.dart';
-import 'objects.dart';
+
 
 
 class HomePage extends StatefulWidget {
