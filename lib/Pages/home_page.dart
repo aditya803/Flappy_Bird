@@ -19,9 +19,20 @@ class _HomePageState extends State<HomePage> {
   double time = 0;
   double birdHeight = 0.1;
   double birdWidth = 0.1;
+  int score = 0;
+  int highscore = 0;
 
   bool gameHasStarted = false;
 
+  void _counter(double x){
+    setState(() {
+      if(x >= birdWidth &&
+          x + barrierWidth >= -birdWidth )
+        score++;
+      if(score>highscore)
+        highscore = score;
+    });
+  }
   static List<double> barrierX=  [2 , 2 + 1.5];
   static double barrierWidth = 0.5;
   List<List<double>> barrierHeight = [
@@ -66,17 +77,22 @@ class _HomePageState extends State<HomePage> {
   }
   bool birdisDead(){
     if(birdY < -1 || birdY > 1){
+      score = 0;
       return true;
     }
-
-    for(int i=0;i< barrierX.length;i++){
+    int i, x=0;
+    for(i=0;i< barrierX.length;i++){
       if(barrierX[i] <= birdWidth &&
          barrierX[i] + barrierWidth >= -birdWidth &&
          (birdY <= -1 + barrierHeight[i][0] ||
            birdY + birdHeight >= 1 - barrierHeight[i][1])){
+        score=0;
         return true;
+      }else{
+        x=i;
       }
     }
+    _counter(barrierX[x]);
     return false;
   }
   void _showDialog(){
@@ -194,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text('SCORE',style: TextStyle(color: Colors.white,fontSize: 15),),
                         SizedBox(height: 20),
-                        Text('0',style: TextStyle(color: Colors.white,fontSize: 15),)
+                        Text('$score',style: TextStyle(color: Colors.white,fontSize: 15),)
                       ],
                     ),
                     Column(
@@ -202,7 +218,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text('HIGH SCORE',style: TextStyle(color: Colors.white,fontSize: 15),),
                         SizedBox(height: 20),
-                        Text('0',style: TextStyle(color: Colors.white,fontSize: 15),)
+                        Text('$highscore',style: TextStyle(color: Colors.white,fontSize: 15),)
                       ],
                     )
                   ],
